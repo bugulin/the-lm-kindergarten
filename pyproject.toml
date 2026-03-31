@@ -4,4 +4,6 @@ version = "0.1.0"
 description = "The LM Kindergarten's solution for SemEval-2026 Task 11: Disentangling Content and Formal Reasoning in Large Language Models."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "click>=8.3.1",
+]
