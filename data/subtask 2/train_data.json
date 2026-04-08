@@ -1,6 +1,6 @@
 [
     {
-        "id": "s2_1",
+        "id": "2b0b995d258448ec4c0fdcdb9eb25e0535501defa29701b75bb6e47a44bf17cd",
         "syllogism": "All roses are flowers. Some flowers are red. Every tulip is a plant. All flowers are plants. Some roses are fragrant. Therefore, all roses are plants.",
         "validity": true,
         "plausibility": true,
@@ -10,14 +10,14 @@
         ]
     },
     {
-        "id": "s2_2",
+        "id": "a5aea7312eba416da21a5e3a93f70d126868eec52229e70b7d404044d86fca5f",
         "syllogism": "All cats are mammals. Some mammals can swim. Every whale is aquatic. Some birds can fly. Therefore, all cats can swim.",
         "validity": false,
         "plausibility": true,
         "relevant_premises": []
     },
     {
-        "id": "s2_3",
+        "id": "5ae1ad66954694554a221168e609ab02555688e073b3b56b24f304d37f0855e4",
         "syllogism": "All squares are rectangles. All rectangles are polygons. Some polygons are blue. Every triangle has three sides. Therefore, all squares are polygons.",
         "validity": true,
         "plausibility": true,
@@ -27,14 +27,14 @@
         ]
     },
     {
-        "id": "s2_4",
+        "id": "99d5ab81802fea06c6f7a9bf7f8b197cc322bcb1ec85b421e7f67805e832bec2",
         "syllogism": "Some dogs are reptiles. All reptiles lay eggs. Some mammals have fur. Every snake is a reptile. Therefore, some dogs lay eggs.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_5",
+        "id": "21238baf8dfe075a4903f63d505f547312b55d89f4cf331134eb628d496196c0",
         "syllogism": "All laptops are computers. All computers process data. Some devices are portable. Every smartphone is a device. Therefore, all laptops process data.",
         "validity": true,
         "plausibility": true,
@@ -44,14 +44,14 @@
         ]
     },
     {
-        "id": "s2_6",
+        "id": "a55e6a014ff1a09299c989e5cebea3a032bd8350f6e780da303e7fe5bacc454a",
         "syllogism": "Some apples are vehicles. All vehicles have engines. Every fruit grows on trees. Some trees are tall. Therefore, some apples have engines.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_7",
+        "id": "2a356e172c9adc8cae972607f08d9849ef3b9073c1aa2d9c28a436a95e4bf7f0",
         "syllogism": "All birds have wings. All sparrows are birds. Some animals are nocturnal. Every owl is nocturnal. Therefore, all sparrows have wings.",
         "validity": true,
         "plausibility": true,
@@ -61,14 +61,14 @@
         ]
     },
     {
-        "id": "s2_8",
+        "id": "b3bf685f2aeed331358fc3a195c710f8f1f8b69c61ef37503c91ced24fff8599",
         "syllogism": "All fish can fly. Some birds are mammals. Every mammal breathes air. Some fish swim. Therefore, all fish breathe air.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_9",
+        "id": "d1c5d129ca08b56f84f8407ef1418d8c890c6ea3a64bf9b9700e48a355a101e7",
         "syllogism": "All teachers are educated. All educated people read books. Some people play sports. Every athlete trains daily. Therefore, all teachers read books.",
         "validity": true,
         "plausibility": true,
@@ -78,21 +78,21 @@
         ]
     },
     {
-        "id": "s2_10",
+        "id": "bd944d133407bb8ef1e192ded642efaff8ef81270889ebf5afa9bb119ee8751f",
         "syllogism": "Some chairs are animals. All animals breathe. Every table is furniture. Some furniture is wooden. Therefore, some chairs breathe.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_11",
+        "id": "2dbfb3b1f1604eb3b9cc1d90127c1d368791caac29101e49cc8c5144c36e7c99",
         "syllogism": "All cars have wheels. All vehicles have wheels. Some bikes are vehicles. Every engine burns fuel. Therefore, all cars are vehicles.",
         "validity": false,
         "plausibility": true,
         "relevant_premises": []
     },
     {
-        "id": "s2_12",
+        "id": "9e8fc6678512ec435ccafffa63d592135a30158d29daaf047e35a12398038fbc",
         "syllogism": "All mammals are animals. All dogs are mammals. Some animals are pets. Every pet is loved. Therefore, all dogs are animals.",
         "validity": true,
         "plausibility": true,
@@ -102,14 +102,14 @@
         ]
     },
     {
-        "id": "s2_13",
+        "id": "9698b8090a974a331038c71649b6a410b3a3dd0857b1c65136fa1c2646d611c4",
         "syllogism": "Some books are edible. All edible things are tasty. Every library contains books. Some books are old. Therefore, some books are tasty.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_14",
+        "id": "d01ac254b80408d7ac6e4c4fba69e249df3a59c467972935fe5ff4c19d1a36fe",
         "syllogism": "All planets orbit stars. All Earth-like bodies are planets. Some stars are massive. Every galaxy contains stars. Therefore, all Earth-like bodies orbit stars.",
         "validity": true,
         "plausibility": true,
@@ -119,14 +119,14 @@
         ]
     },
     {
-        "id": "s2_15",
+        "id": "f9092ed71a218dce1527605f00bcfff9df8cbb05706e68de13d289e4bc920b60",
         "syllogism": "All musicians are silent. Some silent things are loud. Every instrument makes sound. Some sounds are pleasant. Therefore, all musicians are loud.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_16",
+        "id": "068c0093ba16f9fcd6108766a20ac41c4e7dc8f2efd5a80803fe6b8a7877a8b1",
         "syllogism": "All engineers solve problems. All problem solvers think critically. Some people like puzzles. Every puzzle is challenging. Therefore, all engineers think critically.",
         "validity": true,
         "plausibility": true,
@@ -136,14 +136,14 @@
         ]
     },
     {
-        "id": "s2_17",
+        "id": "7547f174cf9fade15cfdb30c3c0ca588b27672463ad404b7b84374702d0ce366",
         "syllogism": "Some clouds are computers. All computers run programs. Every sky contains clouds. Some programs crash. Therefore, some clouds run programs.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_18",
+        "id": "099d5fc6c437cbd080f0649688a81cf9c84d0cb6c6b319db4fb1ff6074c7706c",
         "syllogism": "All poets write words. All writers use language. Some languages are complex. Every book contains words. Therefore, all poets use language.",
         "validity": true,
         "plausibility": true,
@@ -153,14 +153,14 @@
         ]
     },
     {
-        "id": "s2_19",
+        "id": "78791ad036f7215376eba425b7e9d57abedd48e46c8608ce9615bc85f616f604",
         "syllogism": "All stones are alive. Some alive things fly. Every bird flies. Some birds sing. Therefore, all stones fly.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_20",
+        "id": "3e53da167b4453985ca946490cd00a1040d390ac809d997a69d31fc582ce6fb3",
         "syllogism": "All programmers write code. All code runs on machines. Some machines are fast. Every computer is a machine. Therefore, all programmers write code that runs on machines.",
         "validity": true,
         "plausibility": true,
@@ -170,14 +170,14 @@
         ]
     },
     {
-        "id": "s2_21",
+        "id": "ba4c4793a51d4988d0fe56563373c800c0bf6f7dbd71cb7a670ecdf6f99e174b",
         "syllogism": "Some pens are animals. All animals eat food. Every desk holds pens. Some desks are wooden. Therefore, some pens eat food.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_22",
+        "id": "47fb210ee0ee3559c0ab5359a51599e4dc676a7f123c5d8a8f5d5d4ec241ca1e",
         "syllogism": "All chefs cook food. All cooks prepare meals. Some meals are delicious. Every kitchen has tools. Therefore, all chefs prepare meals.",
         "validity": true,
         "plausibility": true,
@@ -187,14 +187,14 @@
         ]
     },
     {
-        "id": "s2_23",
+        "id": "c2d4b9e6bb3825e67c7738d356c0a895a3c4ed593a1fd2b8f13bfca02a46563f",
         "syllogism": "All rivers are dry. Some dry things are wet. Every lake holds water. Some water evaporates. Therefore, all rivers are wet.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_24",
+        "id": "c8bb8528b45fb6e65e1cc7ba5779d3a72f6f828d78c45caf60362228203c649e",
         "syllogism": "All students learn. All learners gain knowledge. Some people read books. Every book contains information. Therefore, all students gain knowledge.",
         "validity": true,
         "plausibility": true,
@@ -204,14 +204,14 @@
         ]
     },
     {
-        "id": "s2_25",
+        "id": "e6cf947f0e0ab600521bd3fb84b981e6ca90e2f962bd1a478d06d8ec5157e2fa",
         "syllogism": "Some mountains are computers. All computers process data. Every mountain is tall. Some tall things are visible. Therefore, some mountains process data.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_26",
+        "id": "df7c1dda5cee3114e3394ccc31bce31d203dd553bb7aa38dda1764373acfd8f0",
         "syllogism": "All doctors treat patients. All people who treat patients help others. Some helpers are volunteers. Every volunteer works. Therefore, all doctors help others.",
         "validity": true,
         "plausibility": true,
@@ -221,14 +221,14 @@
         ]
     },
     {
-        "id": "s2_27",
+        "id": "59eff4fb483bfa127b8cb1aaffeb901ff496eaf9e6529806b198da255d13d1d5",
         "syllogism": "All chairs can think. Some thinkers are humans. Every human walks. Some walks are long. Therefore, all chairs are humans.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_28",
+        "id": "073be017e774a4d3819aad098c361eb2b1a38167fdd1ffdc4cc3023a7c88a043",
         "syllogism": "All flowers grow. All growing things need water. Some water is clean. Every plant grows. Therefore, all flowers need water.",
         "validity": true,
         "plausibility": true,
@@ -238,14 +238,14 @@
         ]
     },
     {
-        "id": "s2_29",
+        "id": "7edbaf7d4a966775dc0be7c14df73b42509ee6e3112981e87f963a3812dfc81f",
         "syllogism": "Some computers are bananas. All bananas are fruits. Every fruit is edible. Some fruits are sweet. Therefore, some computers are edible.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_30",
+        "id": "0af26bd8d0183a0d84d283375cacda1c32281a514ae51e73638395af61fc1910",
         "syllogism": "All athletes train. All people who train improve. Some improvements are noticeable. Every gym has equipment. Therefore, all athletes improve.",
         "validity": true,
         "plausibility": true,
@@ -255,14 +255,14 @@
         ]
     },
     {
-        "id": "s2_31",
+        "id": "1b589b07543414bf7b7aa86515b0c1fdc705b78864a0c7fdf92b533fa2708a76",
         "syllogism": "All pencils are animals. Some animals fly. Every bird flies. Some birds migrate. Therefore, all pencils fly.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_32",
+        "id": "79b0b41a9538ceee56d940d9c28b000bf5b6bf363510c4c705c210dd99c93571",
         "syllogism": "All lawyers study law. All people who study law read books. Some books are long. Every library has books. Therefore, all lawyers read books.",
         "validity": true,
         "plausibility": true,
@@ -272,14 +272,14 @@
         ]
     },
     {
-        "id": "s2_33",
+        "id": "2e58a167926c48406f4c79627dc86abd8c69a2606b86c0f09e4f55b20f7dd02b",
         "syllogism": "Some trees are vehicles. All vehicles move. Every tree grows. Some trees are tall. Therefore, some trees move.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_34",
+        "id": "64e29dda160b485915f38c3a28d8177f50096e8ef9a4c9a5edb574f4ce7ef8a4",
         "syllogism": "All scientists conduct research. All researchers discover things. Some discoveries are important. Every lab conducts experiments. Therefore, all scientists discover things.",
         "validity": true,
         "plausibility": true,
@@ -289,14 +289,14 @@
         ]
     },
     {
-        "id": "s2_35",
+        "id": "533dfabb7dd2e7b566c94c5792d64c550a039cb7015e97f4bd25f5ab4bb9458b",
         "syllogism": "All tables can swim. Some swimmers are fish. Every fish lives in water. Some water is cold. Therefore, all tables live in water.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_36",
+        "id": "0ff8793d3b48881579f272811e2623e742852c9066573a209ebbf24a095b99a9",
         "syllogism": "All singers perform. All performers entertain. Some entertainment is enjoyable. Every stage hosts performers. Therefore, all singers entertain.",
         "validity": true,
         "plausibility": true,
@@ -306,14 +306,14 @@
         ]
     },
     {
-        "id": "s2_37",
+        "id": "94e3dd944312951776b894f8a4878ec7cf49d819d9c9f482ac5a21f1a194dc74",
         "syllogism": "Some shoes are animals. All animals breathe. Every shoe is worn. Some worn things are old. Therefore, some shoes breathe.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_38",
+        "id": "dfb4d6748917b9c0e71204bae8607218afff2df74724adb1ca6bea097cc651f4",
         "syllogism": "All teachers instruct students. All instructors explain concepts. Some concepts are difficult. Every class has students. Therefore, all teachers explain concepts.",
         "validity": true,
         "plausibility": true,
@@ -323,14 +323,14 @@
         ]
     },
     {
-        "id": "s2_39",
+        "id": "cd01ca9ef119c3b81c6d346cff5ae09aaae33d094f4af66f6d72bc63833e14a6",
         "syllogism": "All clouds are machines. Some machines compute. Every computer computes. Some computations are fast. Therefore, all clouds compute.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_40",
+        "id": "812281557aa9e2f2c28598d0ca967692d7036a988e622c44aff3f54ae1d3504f",
         "syllogism": "All artists create works. All creators produce outputs. Some outputs are valuable. Every gallery shows works. Therefore, all artists produce outputs.",
         "validity": true,
         "plausibility": true,
@@ -340,14 +340,14 @@
         ]
     },
     {
-        "id": "s2_41",
+        "id": "040463a7843212965d4f739d9b4d3aa3d24dcc3c1912d0d3d6349040a7ed5717",
         "syllogism": "Some lakes are computers. All computers process data. Every lake contains water. Some water is deep. Therefore, some lakes process data.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_42",
+        "id": "7d0796540e3754b84f34c0a06c4e920a0de215aa2141f742ac2c8f70a427ba1b",
         "syllogism": "All nurses care for patients. All caregivers help people. Some people are grateful. Every hospital has nurses. Therefore, all nurses help people.",
         "validity": true,
         "plausibility": true,
@@ -357,14 +357,14 @@
         ]
     },
     {
-        "id": "s2_43",
+        "id": "01cf06dfee6c8784e50a0a39845b84058ed4c54faa7899a2d1a93c8301079a46",
         "syllogism": "All rocks are animals. Some animals run. Every runner moves. Some movement is fast. Therefore, all rocks run.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_44",
+        "id": "85225bd2ebc9e7befcb8e51656cad6511a7c06422ac660dab66a25105a235375",
         "syllogism": "All drivers operate vehicles. All operators control machines. Some machines are complex. Every road has vehicles. Therefore, all drivers control machines.",
         "validity": true,
         "plausibility": true,
@@ -374,14 +374,14 @@
         ]
     },
     {
-        "id": "s2_45",
+        "id": "f5fbcee8a0b8ac668e082da20892ed145615a2c1d9eb96314a2774998e61c4ad",
         "syllogism": "Some cups are animals. All animals eat food. Every cup holds liquid. Some liquids are hot. Therefore, some cups eat food.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_46",
+        "id": "db5c2c360b917b5685410ba8206fa26c97bae5101f29b21cda9ada367ccfb240",
         "syllogism": "All writers create text. All creators produce content. Some content is published. Every book contains text. Therefore, all writers produce content.",
         "validity": true,
         "plausibility": true,
@@ -391,14 +391,14 @@
         ]
     },
     {
-        "id": "s2_47",
+        "id": "62a51b1e03e9995370fed92bc80dc950f61fd0ce561f9f8beb887b8351a925f7",
         "syllogism": "All doors can speak. Some speakers are humans. Every human communicates. Some communication is verbal. Therefore, all doors communicate.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_48",
+        "id": "008cec89c8fa4e851bfbb4c256631bca28e5802261f30f4a4188ea59ea682042",
         "syllogism": "All engineers design systems. All designers create structures. Some structures are complex. Every factory builds systems. Therefore, all engineers create structures.",
         "validity": true,
         "plausibility": true,
@@ -408,14 +408,14 @@
         ]
     },
     {
-        "id": "s2_49",
+        "id": "5b991d3bf81c72975705a35569f0103f33f68568309f59aa6d50e0a29e4deb51",
         "syllogism": "Some pencils are computers. All computers process data. Every pencil writes. Some writing is neat. Therefore, some pencils process data.",
         "validity": false,
         "plausibility": false,
         "relevant_premises": []
     },
     {
-        "id": "s2_50",
+        "id": "ea5d52f625aeb478d7c0aabfa05c37fc289d54ed70f4acc56c3d0ba3f9ebd311",
         "syllogism": "All pharmacists dispense medicine. All people who dispense medicine work in healthcare. Some healthcare workers are busy. Every hospital employs pharmacists. Therefore, all pharmacists work in healthcare.",
         "validity": true,
         "plausibility": true,
