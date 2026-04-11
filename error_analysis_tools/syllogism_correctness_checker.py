@@ -297,6 +297,9 @@ def normalize_term(term: str) -> str:
             last = last[:-3] + "y"
         elif len(last) > 3 and last.endswith("s") and not last.endswith("ss"):
             last = last[:-1]
+            
+        if last == 'people':
+            last = 'person'
         
         tokens[-1] = last
     t = " ".join(tokens)
@@ -466,6 +469,18 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
     
     if ignore != '':
         ignore=ignore.split()[-1]
+    
+    #basic set theoretical handling
+    if 'mutually exclusive' in clause or 'mutually disjoint' in clause:
+        tokens = clause.split()
+        clause = 'no '
+        for t in tokens:
+            if t not in ['and','mutually','disjoint','exclusive']:
+                clause = clause + t + " "
+            elif t == 'and':
+                clause = clause + "are" + " "
+        print(clause)
+    
 
         
     clause = strip_leading_fillers(clause)
@@ -489,7 +504,7 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
         "E",
         "universal negative",
         re.compile(
-            rf"^(?:it is necessarily true that no|it is also true that no|it is true that no|it is true that none|there is not a single|it is impossible for|there is no|there are no|it is true that no|nothing that is|not a single|not one single|there are no|there exist no|it is impossible for|none of|no instance of|absolutely nothing|absolutely no|are not considered|is not considered|considered|absolutely|no one|not one|none|no)\s+(?:(?:{ignore})\s+)?+(.+?)\s+(?:that are|that is|which are|which is|who are|who is|can be considered|can be called|can be classified as|can be|to be|are|is)\s+(.+)$",
+            rf"^(?:nothing that can be considered|it is necessarily true that no|it is also true that no|it is true that no|it is true that none|there is not a single|it is impossible for|there is no|there are no|it is true that no|nothing that is|not a single|not one single|there are no|there exist no|it is impossible for|none of|no instance of|absolutely nothing|absolutely no|are not considered|is not considered|considered|absolutely|no one|not one|none|no)\s+(?:(?:{ignore})\s+)?+(.+?)\s+(?:that are|that is|which are|which is|who are|who is|can be considered|can be called|can be classified as|can be|to be|are|is)\s+(.+)$",
             re.I
         )
     ))
@@ -514,7 +529,7 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
         "O",
         "particular negative",
         re.compile(
-            rf"^(?:there is a subset of|a number of|a portion of|there are some|there exist some|there exists at least one|at least one|a certain quantity of|certain quantity of|certain number of|a certain number of|certain|some|a few)\s+(?:(?:{ignore})\s+)?+(.+?)\s+(?:are|is)\s+not\s+(.+)$",
+            rf"^(?:there is a subset of|a number of|a portion of|there are some|there exist some|there exists at least one|at least one|a certain quantity of|certain quantity of|certain number of|a certain number of|certain|some of|some|a few)\s+(?:(?:{ignore})\s+)?+(.+?)\s+(?:are|is)\s+not\s+(.+)$",
             re.I
         )
     ))
@@ -524,7 +539,7 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
         "I",
         "particular affirmative",
         re.compile(
-            rf"^(?:there is a subset of|it is a known fact that some|there exists a group of|a subset of|a few of the things known as|a select few|a certain quantity of|certain quantity of|a certain number of|a number of|a portion of|there are some|there exist some|there exists at least one|at least one|certain|certain number of|a certain number of|a subset of|there exist|there are a few|there is a few|there is|there are|a few|among the|among|some)\s+(?:(?:{ignore})\s+)?+(.+?)\s+(?:are classified as|that is also|that are also|is composed of|are composed of|are also|is also|that is|that are|who is|who are|which is|which are|is considered|are considered|can be considered|can be called|is included in|is in|are|is)\s+(.+)$",
+            rf"^(?:there is a subset of|it is a known fact that some|there exists a group of|a subset of|a few of the things known as|a select few|a certain quantity of|certain quantity of|a certain number of|a number of|a portion of|there are some|there exist some|there exists at least one|at least one|certain|certain number of|a certain number of|a subset of|there exist|there are a few|there is a few|there is|there are|a few|among the|among|some of|some)\s+(?:(?:{ignore})\s+)?+(.+?)\s+(?:are classified as|that is also|that are also|is composed of|are composed of|are also|is also|that is|that are|who is|who are|which is|which are|is considered|are considered|can be considered|can be called|is included in|is in|are|is)\s+(.+)$",
             re.I
         )
     ))
@@ -644,41 +659,159 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
         m = pattern.match(clause)
         if not m:
             continue
+        
+        left = m.group(1)
+        right = m.group(2)
+        
+        
+        marker = None
+        if ' is ' in right:
+            marker = 'is'
+        if ' are ' in right:
+            marker = 'are'
+        if 'is inescapable' in right:
+            marker=None
+        
+        if marker is not None:
+            i = right.find(marker)
 
-        left = normalize_term(m.group(1))
-        right = normalize_term(m.group(2))
+            if i != -1:
+                start = right.rfind(" ", 0, i) + 1
+                left, right = right[:start], right[i + len(marker):]
+        
+        
+        left = normalize_term(left)
+        right = normalize_term(right)
 
         # For "It is impossible for S to be P", captured group(1) may still be odd.
         left = re.sub(r"^a\s+", "", left)
         right = re.sub(r"^a\s+", "", right)
+        
+        if 'who are scientists, there are some who are also programmers' in clause:
+            print(clause)
+            print(left)
+            print(right)
+        
+        
         
 
         
         
         
         #I don't want 'thing' to be subject nor predicate unless necessary
+        issues = [
+            'pieces of ',
+            'piece of ',
+            'kinds of ',
+            'kind of ',
+            'types of',
+            'type of',
+            'sorts of',
+            'sort of',
+            'objects that are ',
+            'object that is ',
+            'objects which are ',
+            'object which is ',
+            'things that are ',
+            'thing that is ',
+            'things which are ',
+            'thing which is ',
+            'creatures that are ',
+            'creature that is ',
+            'creatures which are ',
+            'creature which is ',
+            'items that are ',
+            'item that is ',
+            'items which are ',
+            'item which is ',
+            'people that are ',
+            'person that is ',
+            'people which are ',
+            'person which is ',
+            'people who are ',
+            'person who is ',
+            'individuals that are ',
+            'individual that is ',
+            'individuals which are ',
+            'individual which is ',
+            'individuals who are ',
+            'individuals who is ',
+            'subset of ',
+            'set of ',
+            'one of the ',
+            'who are ',
+            'who is ',
+            'also ',
+            'also',
+            'single ',
+            'things ',
+            'thing ',
+            'things',
+            'thing',
+            ]
+        
+        for issue in issues:
+            if issue in left:
+                marker = issue
+                i = left.find(marker)
+
+                if i != -1:
+                    start = left.rfind(" ", 0, i) + 1
+                    left = left[:start] + left[i + len(marker):]
+                else:
+                    print('err')
+                
+                left = normalize_term(left)
+                right = normalize_term(right)
+            
+            if issue in right:
+                marker = issue
+                i = right.find(marker)
+
+                if i != -1:
+                    start = right.rfind(" ", 0, i) + 1
+                    right = right[:start] + right[i + len(marker):]
+                else:
+                    print('err')
+                
+                left = normalize_term(left)
+                right = normalize_term(right)
+        if 'who are scientists, there are some who are also programmers' in clause:
+            print(clause)
+            print(left)
+            print(right)
+        
+        """
         if True:
             if ('thing' in left or 'things' in left) and len(left.split())>1:
-                tokens = left.split()
-                left = ''
-                for t in tokens[1:]:
-                    left = left + t + " "
+                marker = "things" if "things" in left else 'thing'
+                i = left.find(marker)
+
+                if i != -1:
+                    start = left.rfind(" ", 0, i) + 1
+                    left = left[:start] + left[i + len(marker):]
+                else:
+                    print('err')
                 left = normalize_term(left)
                 right = normalize_term(right)
             
             if ('thing' in right or 'things' in right) and len(right.split())>1:
-                tokens = right.split()
-                right = ''
-                for t in tokens[1:]:
-                    right = right + t + " "
+                marker = "things" if "things" in right else "thing"
+                i = right.find(marker)
+
+                if i != -1:
+                    start = right.rfind(" ", 0, i) + 1
+                    right = right[:start] + right[i + len(marker):]
                 left = normalize_term(left)
                 right = normalize_term(right)
             
             if ('piece of ' in left or "pieces of " in left) and len(left.split())>2:
-                tokens = left.split()
-                left = ''
-                for t in tokens[2:]:
-                    left = left + t + " "
+                marker = 'pieces of ' if 'pieces of ' in left else 'piece of '
+                i = left.find(marker)
+
+                if i != -1:
+                    start = left.rfind(" ", 0, i) + 1
+                    left = left[:start] + left[i + len(marker):]
                 left = normalize_term(left)
                 right = normalize_term(right)
             
@@ -691,10 +824,14 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
                 right = normalize_term(right)
                 
             if ("kind of " in left or "kinds of " in left) and len(left.split())>2:
-                tokens = left.split()
-                left = ''
-                for t in tokens[2:]:
-                    left = left + t + " "
+                marker = "things" if "things" in left else 'thing'
+                i = left.find(marker)
+
+                if i != -1:
+                    start = left.rfind(" ", 0, i) + 1
+                    left = left[:start] + left[i + len(marker):]
+                else:
+                    print('err')
                 left = normalize_term(left)
                 right = normalize_term(right)
             
@@ -707,10 +844,14 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
                 right = normalize_term(right)
                 
             if ("type of " in left or "types of " in left) and len(left.split())>2:
-                tokens = left.split()
-                left = ''
-                for t in tokens[2:]:
-                    left = left + t + " "
+                marker = "things" if "things" in left else 'thing'
+                i = left.find(marker)
+
+                if i != -1:
+                    start = left.rfind(" ", 0, i) + 1
+                    left = left[:start] + left[i + len(marker):]
+                else:
+                    print('err')
                 left = normalize_term(left)
                 right = normalize_term(right)
             
@@ -723,10 +864,14 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
                 right = normalize_term(right)
                 
             if ("sort of " in left or "sorts of " in left) and len(left.split())>2:
-                tokens = left.split()
-                left = ''
-                for t in tokens[2:]:
-                    left = left + t + " "
+                marker = "things" if "things" in left else 'thing'
+                i = left.find(marker)
+
+                if i != -1:
+                    start = left.rfind(" ", 0, i) + 1
+                    left = left[:start] + left[i + len(marker):]
+                else:
+                    print('err')
                 left = normalize_term(left)
                 right = normalize_term(right)
             
@@ -739,10 +884,14 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
                 right = normalize_term(right)
                 
             if ('object that is' in left or 'objects that are' in left) and len(left.split())>3:
-                tokens = left.split()
-                left = ''
-                for t in tokens[3:]:
-                    left = left + t + " "
+                marker = "things" if "things" in left else 'thing'
+                i = left.find(marker)
+
+                if i != -1:
+                    start = left.rfind(" ", 0, i) + 1
+                    left = left[:start] + left[i + len(marker):]
+                else:
+                    print('err')
                 left = normalize_term(left)
                 right = normalize_term(right)
             
@@ -997,76 +1146,76 @@ def parse_clause(raw_clause: str, role: str) -> ParsedClause:
             if ('also' in left) and len(left.split())>1:
                 marker = "also"
                 i = left.find(marker)
-                print(left)
+                #print(left)
 
                 if i != -1:
                     start = left.rfind(" ", 0, i) + 1
                     left = left[:start] + left[i + len(marker):]
                 left = normalize_term(left)
-                print(left)
+                #print(left)
                 right = normalize_term(right)
             
             if ('also' in right) and len(right.split())>1:
                 marker = "also"
                 i = right.find(marker)
-                print(right)
+                #print(right)
 
                 if i != -1:
                     start = right.rfind(" ", 0, i) + 1
                     right = right[:start] + right[i + len(marker):]
                 left = normalize_term(left)
                 right = normalize_term(right)
-                print(right)
+                #print(right)
             
             if ('single' in left) and len(left.split())>1:
                 marker = "single"
                 i = left.find(marker)
-                print(left)
+                #print(left)
 
                 if i != -1:
                     start = left.rfind(" ", 0, i) + 1
                     left = left[:start] + left[i + len(marker):]
                 left = normalize_term(left)
-                print(left)
+                #print(left)
                 right = normalize_term(right)
             
             if ('single' in right) and len(right.split())>1:
                 marker = "single"
                 i = right.find(marker)
-                print(right)
+                #print(right)
 
                 if i != -1:
                     start = right.rfind(" ", 0, i) + 1
                     right = right[:start] + right[i + len(marker):]
                 left = normalize_term(left)
                 right = normalize_term(right)
-                print(right)
+                #print(right)
+            """
 
-
         
         
-            if len(left.split())>1 and right is None:
-                splits = left.split()[0]
-                left, right = splits[0], splits[1]
-                left = normalize_term(left)
-                right = normalize_term(right)
-            
-            if len(right.split())>1 and left is None:
-                splits = right.split()[0]
-                left, right = splits[0], splits[1]
-                left = normalize_term(left)
-                right = normalize_term(right)
-            
-            if len(left.split())>1:
-                left = left.split()[0]
-                left = normalize_term(left)
-                right = normalize_term(right)
-            
-            if len(right.split())>1:
-                right = right.split()[0]
-                left = normalize_term(left)
-                right = normalize_term(right)
+        if len(left.split())>1 and right is None:
+            splits = left.split()[0]
+            left, right = splits[0], splits[1]
+            left = normalize_term(left)
+            right = normalize_term(right)
         
+        if len(right.split())>1 and left is None:
+            splits = right.split()[0]
+            left, right = splits[0], splits[1]
+            left = normalize_term(left)
+            right = normalize_term(right)
+        
+        if len(left.split())>1:
+            left = left.split()[0]
+            left = normalize_term(left)
+            right = normalize_term(right)
+        
+        if len(right.split())>1:
+            right = right.split()[0]
+            left = normalize_term(left)
+            right = normalize_term(right)
+    
 
         if not left or not right:
             return ParsedClause(raw_clause, role, None, None, None, "low", [f"{description}: empty term after normalization"])
@@ -1147,10 +1296,10 @@ def check_syllogistic_form(parsed: List[ParsedClause], original_text: str) -> Tu
     debug["term_frequencies"] = dict(terms)
     distinct_terms = list(terms.keys())
     if len(distinct_terms) < 3:
-        return "uncertain", f"fewer than 3 distinct terms after normalization ({len(distinct_terms)})", debug
+        return "uncertain_count", f"fewer than 3 distinct terms after normalization ({len(distinct_terms)})", debug
     if len(distinct_terms) > 3:
         # Could be bad normalization or a genuine non-syllogism.
-        return "uncertain", f"more than 3 distinct terms after normalization ({len(distinct_terms)})", debug
+        return "uncertain_count", f"more than 3 distinct terms after normalization ({len(distinct_terms)})", debug
 
     # Conclusion terms must be exactly two distinct terms
     if conclusion.subject is None or conclusion.predicate is None:
@@ -1271,9 +1420,9 @@ def save_json(path: str, obj: Any) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", default='C:/Users/stepi/DRL_assignments/LLMs/train_data_s2.json', help="Path to input JSON file")
-    parser.add_argument("--output", default = 'C:/Users/stepi/DRL_assignments/LLMs/output_s2.json', help="Path to output JSON file")
-    parser.add_argument("--summary", default='C:/Users/stepi/DRL_assignments/LLMs/summary_s2.json', help="Optional path to summary JSON")
+    parser.add_argument("--input", default='C:/Users/stepi/DRL_assignments/LLMs/train_data.json', help="Path to input JSON file")
+    parser.add_argument("--output", default = 'C:/Users/stepi/DRL_assignments/LLMs/output.json', help="Path to output JSON file")
+    parser.add_argument("--summary", default='C:/Users/stepi/DRL_assignments/LLMs/summary.json', help="Optional path to summary JSON")
     args = parser.parse_args()
 
     data = load_json(args.input)
