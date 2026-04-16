@@ -1,4 +1,5 @@
-from io import Writer
+import json
+from io import Reader, Writer
 
 import click
 
@@ -6,6 +7,24 @@ import click
 @click.group()
 def cli():
     pass
+
+
+@cli.command()
+@click.option(
+    "-m",
+    "--model",
+    type=str,
+    default="Qwen/Qwen3.5-0.8B",
+    help="Change the language model used.",
+)
+@click.option("-c", "--config", type=click.Path(dir_okay=False), default=None)
+@click.argument("file", type=click.File("r"))
+def run(model: str, config: str | None, file: Reader[str]):
+    from inference import SyllogismSolver
+
+    lm = SyllogismSolver(model, config=config)
+    responses = lm.solve(json.load(file))
+    click.echo_via_pager(json.dumps(responses))
 
 
 @cli.command()
