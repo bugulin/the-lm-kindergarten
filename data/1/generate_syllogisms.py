@@ -6,6 +6,9 @@ import numpy as np
 import torch
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import argparse
+import random
+import re
 
 
 
@@ -87,7 +90,26 @@ Generate a conclusion to the 2 premises: {premises} that satisfies the propertie
 - ALWAYS ANSWER IN ENGLISH
 """
 
+IRRELEVANT_PREMISES_PROMPT = """
+# ROLE:
+You are an expert in the field of formal logic and Syllogism creation in natural language.
 
+# WORKFLOW:
+Your goal is to generate exactly 1 additional premise for an existing syllogism.
+The premise must be grammatically natural, but logically irrelevant to the conclusion.
+It should not help derive the conclusion and should not repeat the original premises.
+
+Original premises: {premises}
+Conclusion: {conclusion}
+Topic: {topic}
+
+# NOTES:
+- Return only the additional premise.
+- Do NOT include numbering or bullet points.
+- Do NOT repeat the original premises.
+- Do NOT restate the conclusion.
+- ALWAYS ANSWER IN ENGLISH
+"""
 
 
 def remove_non_utf8(text):
@@ -191,9 +213,101 @@ async def finish_syllogism(premises, prompt, tokenizer, model, enable_thinking=T
     return ans
 
 
+async def create_irrelevant_premise(topic, premises, conclusion, prompt, tokenizer, model, enable_thinking=True):
+    try:
+        messages = [{
+            "role": "user",
+            "content": prompt.format(
+                topic=topic,
+                premises=premises,
+                conclusion=conclusion
+            )
+        }]
+
+        text = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=enable_thinking
+        )
+
+        model_inputs = tokenizer([text], return_tensors="pt").to("cuda")
+        generated_ids = model.generate(
+            **model_inputs,
+            max_new_tokens=64,
+            do_sample=True,
+            temperature=0.8,
+            top_k=10,
+            top_p=0.3,
+            pad_token_id=tokenizer.eos_token_id
+        )
+
+        output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist()
+        response = tokenizer.decode(output_ids, skip_special_tokens=True).strip("\n")
+
+        return response.replace("\n", " ").strip()
+    except Exception as e:
+        print(f"Error in create_irrelevant_premise: {e}")
+        return "network_or_connectivity_issue"
+
+
+async def convert_to_subtask2(syllogisms, raw_premises, tokenizer, model, enable_thinking=True):
+    ans = []
+
+    for index, item in enumerate(tqdm(syllogisms, desc="Adding Irrelevant Premises")):
+        try:
+            premise_source = raw_premises[index // 4]
+            sentences = re.findall(r'[^.!?]+[.!?]', item["syllogism"])
+
+            if len(sentences) < 3:
+                raise ValueError(f"Could not split syllogism into 3 sentences: {item['syllogism']}")
+
+            original_premises = [sentences[0].strip(), sentences[1].strip()]
+            conclusion = sentences[2].strip()
+
+            irrelevant_premise = await create_irrelevant_premise(
+                premise_source["topic"],
+                " ".join(original_premises),
+                conclusion,
+                IRRELEVANT_PREMISES_PROMPT,
+                tokenizer,
+                model,
+                enable_thinking=enable_thinking
+            )
+
+            all_premises = [
+                (original_premises[0], True),
+                (original_premises[1], True),
+                (irrelevant_premise, False)
+            ]
+            random.shuffle(all_premises)
+
+            shuffled_premises = [premise for premise, _ in all_premises]
+            relevant_premises = [
+                i + 1
+                for i, (_, is_relevant) in enumerate(all_premises)
+                if is_relevant
+            ] if item["validity"] else []
+
+            ans.append({
+                "id": item["id"],
+                "syllogism": " ".join(shuffled_premises + [conclusion]),
+                "validity": item["validity"],
+                "plausibility": item["plausibility"],
+                "relevant_premises": relevant_premises
+            })
+        except Exception as e:
+            print(f"Error in convert_to_subtask2: {e}")
+            ans.append("network_or_connectivity_issue")
+
+    return ans
 
 
 async def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--subtask", choices=["1", "2"], default="1")
+    args = parser.parse_args()
+
     # Set display options
     pd.set_option('display.max_colwidth', None)
 
@@ -222,6 +336,8 @@ async def main():
 
     syllogism_list = await finish_syllogism(raw_premises, SYLLOGISM_PROMPT, tokenizer, model)
 
+    if args.subtask == "2":
+        syllogism_list = await convert_to_subtask2(raw_premises=raw_premises, syllogisms=syllogism_list, tokenizer=tokenizer, model=model)
 
     df = pd.DataFrame(syllogism_list)
     df = df.map(remove_non_utf8)
