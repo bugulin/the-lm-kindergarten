@@ -7,7 +7,7 @@ from typing import Generator
 from jinja2 import Environment, FileSystemLoader
 from transformers import pipeline
 
-from .common import InputItem, OutputItem
+from common import InputItem, OutputItem
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=getenv("LOGLEVEL", "INFO").upper())
@@ -50,7 +50,7 @@ class PeftSyllogismSolver(SyllogismSolver):
         from peft import PeftModel
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
-        from .training.lora import bnb_config
+        from training.lora import bnb_config
 
         model = AutoModelForCausalLM.from_pretrained(
             model_name, quantization_config=bnb_config, device_map="auto"
