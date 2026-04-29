@@ -24,18 +24,29 @@ dataset = load_dataset("json", data_files="data/1/train_data.json", split="train
 dataset = dataset.map(make_prompt)
 
 
-def validity_reward(completions, validity, **kwargs):
-    """Reward based on whether the last sentence correctly says 'valid' or 'invalid'."""
+def validity_reward(completions, validity, **kwargs) -> list[float]:
+    """
+    Reward based on whether the last sentence correctly says 'valid' or 'invalid'.
+
+    If the last sentence contains both the words 'valid' and 'invalid', or
+    neither of them, or negation (n't, not), the reward is 0.
+    If the last sentence contains exactly one of the words 'valid' or 'invalid',
+    the reward is 1.0 for the correct answer, -1.0 for the incorrect one.
+
+    :param completions: List of model completions.
+    :param validity: List of ground truth validity labels, extracted from the
+        `validity` field of the dataset.
+    """
     rewards = []
     for completion, is_valid in zip(completions, validity):
         text = completion[0]["content"].strip().lower()
         last_sentence = text.split(".")[-1] if "." in text else text
-        # Check for "invalid" first since it contains "valid" as a substring
         predictions = {
             True: re.search(r"\bvalid\b", last_sentence),
-            False: re.search(r"\binvalid\b", last_sentence)
+            False: re.search(r"\binvalid\b", last_sentence),
+            None: re.search(r"(\bnot|n't)\b", last_sentence),
         }
-        if predictions[True] == predictions[False]:
+        if predictions[None] or predictions[True] == predictions[False]:
             rewards.append(0.0)
         elif predictions[is_valid]:
             rewards.append(1.0)
