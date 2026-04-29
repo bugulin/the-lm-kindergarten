@@ -1,4 +1,6 @@
 import logging
+import re
+from abc import abstractmethod, ABC
 from collections.abc import Iterable
 from os import getenv
 from pathlib import Path
@@ -13,7 +15,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=getenv("LOGLEVEL", "INFO").upper())
 
 
-class SyllogismSolver:
+class SyllogismSolver(ABC):
     """A syllogism solver."""
 
     def __init__(
@@ -40,7 +42,11 @@ class SyllogismSolver:
             logger.info(response)
             answer = response[0]["generated_text"][-1]["content"]
 
-            yield {"id": item["id"], "validity": "TRUE" in answer}
+            yield {"id": item["id"], "validity": self._extract_validity(answer)}
+
+    @abstractmethod
+    def _extract_validity(self, answer: str) -> bool:
+        ...
 
 
 class PeftSyllogismSolver(SyllogismSolver):
@@ -59,3 +65,29 @@ class PeftSyllogismSolver(SyllogismSolver):
         tokenizer = AutoTokenizer.from_pretrained(adapter_name)
 
         super().__init__(model=model, tokenizer=tokenizer)
+
+    def _extract_validity(self, answer: str) -> bool:
+        return "TRUE" in answer
+
+
+class PeftThinkingSyllogismSolver(SyllogismSolver):
+    """A syllogism solver which uses PeftModel."""
+
+    def __init__(self, model_name: str, adapter_name: str) -> None:
+        from peft import PeftModel
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
+        from .training.grpo_lora import bnb_config
+
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name, quantization_config=bnb_config, device_map="auto"
+        )
+        model = PeftModel.from_pretrained(model, adapter_name)
+        tokenizer = AutoTokenizer.from_pretrained(adapter_name)
+
+        super().__init__(prompt_path="solver_thinking.j2", model=model, tokenizer=tokenizer)
+
+    def _extract_validity(self, answer: str) -> bool:
+        answer = answer.strip()
+        last_sentence = answer.split(".")[-1]
+        return re.search(r"\bvalid\b", last_sentence) is not None
