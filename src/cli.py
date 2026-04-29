@@ -1,7 +1,7 @@
 import json
 import tempfile
 from io import Reader, Writer
-from os.path import join
+from pathlib import Path
 
 import click
 from huggingface_hub import login
@@ -30,47 +30,10 @@ def generate(n: int):
 
 @cli.command()
 @click.option(
-    "-d",
-    "--dataset",
-    type=click.Path(exists=True),
-    multiple=True,
-    help="Add training dataset.",
+    "--thinking/--no-thinking",
+    default=False,
+    help="Enable the model to think out loud."
 )
-@click.option(
-    "--preprocess/--no-preprocess",
-    default=True,
-    help="Transform the dataset to fit the instruct structure.",
-)
-@click.option(
-    "-m",
-    "--model",
-    type=str,
-    default="meta-llama/Meta-Llama-3.1-8B-Instruct",
-    help="Set the name of the model to be fine-tuned.",
-)
-@click.option(
-    "-o",
-    "--output",
-    type=click.Path(file_okay=False),
-    default="./syllogism_model_checkpoints",
-    help="Set the path to output directory.",
-)
-def fine_tune(dataset: list[str], preprocess: bool, model: str, output: str):
-    """Fine-tune an existing model."""
-    from training.lora import fine_tune, prepare_dataset
-
-    if preprocess:
-        with tempfile.TemporaryDirectory(dir=".tmp-data") as tmp:
-            datasets = [
-                prepare_dataset(ds, join(tmp, f"{i:02d}.json"))
-                for i, ds in enumerate(dataset)
-            ]
-            fine_tune(model, datasets, output)
-    else:
-        fine_tune(model, dataset, output)
-
-
-@cli.command()
 @click.option(
     "-d",
     "--dataset",
@@ -98,25 +61,38 @@ def fine_tune(dataset: list[str], preprocess: bool, model: str, output: str):
     help="Set the path to output directory.",
 )
 @click.option(
-    "--output_repo",
+    "--output-repo",
     type=str,
     nargs=2,
-    default=None,
+    default=(None, None),
     help="The HuggingFace repository to push the fine-tuned model to.",
 )
-def fine_tune(dataset: list[str], preprocess: bool, model: str, output: str, output_repo: tuple[str, str] | None = None):
+def fine_tune(
+        thinking: bool,
+        dataset: list[str],
+        preprocess: bool,
+        model: str,
+        output: str,
+        output_repo: tuple[str | None, str | None] = (None, None)
+):
     """Fine-tune an existing model."""
-    from training.grpo_lora import fine_tune, prepare_dataset
+    if thinking:
+        from training.grpo_lora import fine_tune, prepare_dataset
+    else:
+        from training.lora import fine_tune, prepare_dataset
+
+    output_repo_name, hf_token = output_repo
 
     if preprocess:
-        with tempfile.TemporaryDirectory(dir=".tmp-data") as tmp:
+        with tempfile.TemporaryDirectory(dir=".") as tmp:
+            tmp_path = Path(tmp)
             datasets = [
-                prepare_dataset(ds, join(tmp, f"{i:02d}.json"))
+                prepare_dataset(ds, tmp_path / f"{i:02d}.json")
                 for i, ds in enumerate(dataset)
             ]
-            fine_tune(model, datasets, output)
+            fine_tune(model, datasets, output, output_repo_name, hf_token)
     else:
-        fine_tune(model, dataset, output)
+        fine_tune(model, dataset, output, output_repo_name, hf_token)
 
 
 @cli.command()
@@ -135,9 +111,8 @@ def fine_tune(dataset: list[str], preprocess: bool, model: str, output: str, out
     help="Change the adapter used.",
 )
 @click.option(
-    "-t",
-    "--thinking",
-    is_flag=True,
+    "--thinking/--no-thinking",
+    default=False,
     help="Enable the model to think out loud.",
 )
 @click.argument("file", type=click.File("r"))

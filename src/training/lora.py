@@ -1,5 +1,6 @@
 import json
 import logging
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import torch
@@ -22,7 +23,7 @@ bnb_config = BitsAndBytesConfig(
 )
 
 
-def prepare_dataset(input_path: str, output_path: str) -> str:
+def prepare_dataset(input_path: str, output_path: str | Path) -> str:
     """Prepare training data.
 
     Llama 3.1 is an instruction-tuned model, so we need to change the JSON format to fit
@@ -58,7 +59,13 @@ def formatting_prompts_func(example):
     )
 
 
-def fine_tune(model_name: str, datasets: Sequence[str], output_dir: str) -> None:
+def fine_tune(
+        model_name: str,
+        datasets: Sequence[str],
+        output_dir: str,
+        output_repo: str | None = None,
+        hf_token: str | None = None,
+) -> None:
     """Fine-tune an LLM using LoRA."""
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
@@ -97,4 +104,6 @@ def fine_tune(model_name: str, datasets: Sequence[str], output_dir: str) -> None
         ),
     )
     trainer.train()
-    # trainer.push_to_hub()
+
+    if output_repo is not None:
+        trainer.push_to_hub(output_repo, token=hf_token)

@@ -21,7 +21,7 @@ bnb_config = BitsAndBytesConfig(
 )
 
 
-def prepare_dataset(input_path: str, output_path: str, prompt_path: str = "solver_thinking.j2") -> str:
+def prepare_dataset(input_path: str, output_path: str | Path, prompt_path: str = "solver_thinking.j2") -> str:
     """Prepare training data.
 
     Llama 3.1 is an instruction-tuned model, so we need to change the JSON format to fit
@@ -32,16 +32,17 @@ def prepare_dataset(input_path: str, output_path: str, prompt_path: str = "solve
     assert isinstance(data, list), "Training data should be stored as a list."
 
     system_prompt = Environment(
-        loader=FileSystemLoader(Path(__file__) / "prompts")
+        # /path/to/src/training/grpo_lora.py -> /path/to/src/prompts
+        loader=FileSystemLoader(Path(__file__).parent.parent / "prompts")
     ).get_template(prompt_path).render()
 
     with open(output_path, "w") as f:
         for entry in data:
             sample = {
-                "prompt": {
+                "prompt": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": entry["syllogism"]}
-                },
+                ],
                 "validity": entry["validity"],
             }
             json.dump(sample, f)
@@ -96,7 +97,7 @@ def fine_tune(
         device_map="auto",
     )
 
-    tokenizer = AutoTokenizer.from_pretrained(model)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     tokenizer.pad_token = tokenizer.eos_token
 
     dataset = load_dataset("json", data_files=datasets, split=Split.TRAIN)
