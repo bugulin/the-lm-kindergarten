@@ -3,51 +3,29 @@
 #PBS -l select=1:ncpus=2:ngpus=1:mem=16gb:gpu_mem=24gb:scratch_local=64gb
 #PBS -l walltime=15:00:00
 
+## JOB SETTINGS
+REPOSITORY="https://github.com/bugulin/SemEval-2026-11"
+BRANCH="main"
+# arguments passed to src/cli.py
+SCRIPT_ARGS="fine-tune --thinking --dataset data/1/train_data.json --output-repo Jajasek/llama-3.1-syllogism-grpo-lora"
+# Optional: path to the file containing the huggingface token, relative to the directory from which the job is submitted
+HF_TOKEN_PATH=".hf_token"
+
 # Print out the basic info about the job
 echo "Hello ${PBS_JOBNAME} at $(date) from user ${USER}!"
 echo "${PBS_JOBID} is running on node $(hostname -f) in a scratch directory ${SCRATCHDIR}"
-echo "Command: $0 ${BRANCH} ${FINE_TUNE_ARGS[*]}"
+echo "Repository: $REPOSITORY"
+echo "Branch: $BRANCH"
+echo "Command: src/cli.py $SCRIPT_ARGS"
 
+# Debug output - print all executed lines to stdout
 set -x
+# Exit on any error
 set -e
 
-usage() {
-    echo "Usage: $0 [--branch BRANCH] [FINE_TUNE_ARGS...]"
-    echo
-    echo "  --branch BRANCH   Branch or commit to checkout (default: main)"
-    echo "  FINE_TUNE_ARGS    Additional arguments passed to 'src/cli.py fine-tune'"
-    echo
-    echo "HuggingFace authentication:"
-    echo "  Place your token in \$PBS_O_WORKDIR/.hf_token (chmod 600)."
-    echo
-    echo "Example how this script can be submitted as a metacentrum job:"
-    echi '  qsub -v ARGS="--branch main --thinking --dataset data/1/train_data.json --output-repo Jajasek/llama-3.1-syllogism-grpo-lora" scripts/training_job.sh'
-    exit 1
-}
-
-BRANCH="main"
-FINE_TUNE_ARGS=()
-
-while [[ $# -gt 0 ]]; do
-    case "${1}" in
-        -h|--help)
-            usage
-            ;;
-        --branch)
-            BRANCH="${2}"
-            shift 2
-            ;;
-        *)
-            FINE_TUNE_ARGS+=("${1}")
-            shift
-            ;;
-    esac
-done
-
-REPOSITORY="https://github.com/bugulin/SemEval-2026-11"
-outdir="out"
-
 trap 'clean_scratch' EXIT
+
+outdir="out"
 
 cd "${SCRATCHDIR}" || exit
 
@@ -58,7 +36,7 @@ curl -LsSf https://astral.sh/uv/install.sh | env UV_PRINT_QUIET=1 UV_UNMANAGED_I
 mkdir -p "${outdir}"
 
 # Authenticate with HuggingFace
-hf_token_file="${PBS_O_WORKDIR}/.hf_token"
+hf_token_file="${PBS_O_WORKDIR}/${HF_TOKEN_PATH}"
 if [[ -f "${hf_token_file}" ]]; then
     HF_TOKEN=$(cat "${hf_token_file}")
     export HF_TOKEN
