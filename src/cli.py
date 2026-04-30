@@ -13,16 +13,23 @@ def cli():
 
 @cli.command()
 @click.option(
+    "-m",
+    "--model",
+    type=str,
+    default="Qwen/Qwen2.5-7B-Instruct",
+    help="Set the name of the model to use.",
+)
+@click.option(
     "-n",
     type=int,
     default=500,
     help="Set the number of syllogisms to generate.",
 )
-def generate(n: int):
+def generate(model: str, n: int):
     """Generate syllogisms in the specified format."""
-    from .generator.task1 import generate_syllogisms
+    from generator.task1 import generate_syllogisms
 
-    generate_syllogisms(n)
+    generate_syllogisms(n, model)
 
 
 @cli.command()

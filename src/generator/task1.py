@@ -9,7 +9,7 @@ from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Note: Update this path if running outside of Kaggle
-MODEL_PATH = "/kaggle/input/models/janflajk/qwen/pytorch/default/1/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28"
+DEFAULT_MODEL_PATH = "/kaggle/input/models/janflajk/qwen/pytorch/default/1/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28"
 
 TOPICS = [
     "Baking Bread",
@@ -284,27 +284,33 @@ async def finish_syllogism(premises, prompt, tokenizer, model, enable_thinking=T
     return ans
 
 
-async def main():
-    # Set display options
-    pd.set_option("display.max_colwidth", None)
+def use_kaggle() -> None:
+    """Load HF_TOKEN from Kaggle secrets.
 
-    # Handle Token (Kaggle secrets alternative)
-    # If not on Kaggle, set the environment variable HF_TOKEN manually in your terminal
+    If not on Kaggle, you should set the environment variable `HF_TOKEN` manually in your terminal.
+    """
     if "HF_TOKEN" not in os.environ:
         try:
-            from kaggle_secrets import UserSecretsClient
+            from kaggle_secrets import UserSecretsClient  # pyright: ignore[reportMissingImports]
 
             user_secrets = UserSecretsClient()
             os.environ["HF_TOKEN"] = user_secrets.get_secret("HF_TOKEN")
         except ImportError:
             print("Warning: HF_TOKEN not found in environment and not on Kaggle.")
 
+
+async def main(model_id: str):
+    # Set display options
+    pd.set_option("display.max_colwidth", None)
+
+    use_kaggle()
+
     print("Loading Model and Tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(
-        MODEL_PATH, use_fast=False, trust_remote_code=True
+        model_id, use_fast=False, trust_remote_code=True
     )
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_PATH, device_map="cuda", torch_dtype=torch.float16, trust_remote_code=True
+        model_id, torch_dtype=torch.float16, trust_remote_code=True
     )
 
     raw_premises = await create_premises(
@@ -329,5 +335,5 @@ async def main():
     print("Process Complete.")
 
 
-def generate_syllogisms(n: int):
-    asyncio.run(main())
+def generate_syllogisms(n: int, model: str = DEFAULT_MODEL_PATH):
+    asyncio.run(main(model))
