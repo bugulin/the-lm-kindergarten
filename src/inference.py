@@ -2,7 +2,6 @@ import logging
 import re
 from abc import abstractmethod, ABC
 from collections.abc import Iterable
-from os import getenv
 from pathlib import Path
 from typing import Generator
 
@@ -12,7 +11,6 @@ from transformers import pipeline
 from common import InputItem, OutputItem
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=getenv("LOGLEVEL", "INFO").upper())
 
 
 class SyllogismSolver(ABC):

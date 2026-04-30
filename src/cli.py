@@ -1,6 +1,8 @@
 import json
+import logging
 import tempfile
 from io import Reader, Writer
+from os import getenv
 from pathlib import Path
 
 import click
@@ -8,7 +10,7 @@ import click
 
 @click.group()
 def cli():
-    pass
+    logging.basicConfig(level=getenv("LOGLEVEL", "INFO").upper())
 
 
 @cli.command()
