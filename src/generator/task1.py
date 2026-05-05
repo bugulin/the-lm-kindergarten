@@ -134,7 +134,7 @@ FORMATS = {
 
 
 
-PREMISES_PROMPTS = """
+PREMISES_PROMPT = """
 # ROLE:
 You are an expert in the field of formal logic and Syllogism creation in natural language.
 You are also an expert in field of human cognition and if humans will find your statements reasonable. In other words if they are plausible or implausible.
