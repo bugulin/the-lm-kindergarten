@@ -49,7 +49,7 @@ def prepare_dataset(input_path: str, output_path: str | Path, prompt_path: str =
             f.write("\n")
 
     logger.info("Conversion complete! %d entries saved to %s.", len(data), output_path)
-    return output_path
+    return str(output_path)
 
 
 def validity_reward(completions, validity, **kwargs) -> list[float]:
@@ -115,7 +115,7 @@ def fine_tune(
         args=GRPOConfig(
             output_dir=output_dir,
             max_completion_length=1024,
-            per_device_train_batch_size=5,
+            per_device_train_batch_size=8,
             gradient_accumulation_steps=4,
             learning_rate=2e-4,
             num_train_epochs=2,
