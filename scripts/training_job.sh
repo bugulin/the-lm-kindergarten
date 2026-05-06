@@ -10,18 +10,20 @@ BRANCH="main"
 SCRIPT_ARGS="fine-tune --thinking --dataset data/1/train_data.json --output-repo Jajasek/llama-3.1-syllogism-grpo-lora"
 # Optional: path to the file containing the huggingface token, relative to the directory from which the job is submitted
 HF_TOKEN_PATH=".hf_token"
+OUTPUT_DIRECTORY="${PBS_O_WORKDIR}/${PBS_JOBNAME}.${PBS_JOBID}"
 
 # Print out the basic info about the job
 echo "Hello ${PBS_JOBNAME} at $(date) from user ${USER}!"
 echo "${PBS_JOBID} is running on node $(hostname -f) in a scratch directory ${SCRATCHDIR}"
+echo "Output directory: ${OUTPUT_DIRECTORY}"
 echo "Repository: $REPOSITORY"
 echo "Branch: $BRANCH"
 echo "Command: src/cli.py $SCRIPT_ARGS"
 
-# Debug output - print all executed lines to stdout
-set -x
 # Exit on any error
 set -e
+# Debug output - print all executed lines to stdout
+set -x
 
 trap 'clean_scratch' EXIT
 
@@ -43,7 +45,7 @@ if [[ -f "${hf_token_file}" ]]; then
 fi
 
 # Run the main task
-bin/uv run src/cli.py fine-tune -o "${outdir}" "${FINE_TUNE_ARGS[@]}"
+bin/uv run src/cli.py ${SCRIPT_ARGS} -o "${outdir}"
 
 # Clean up
-mv "${outdir}" "${PBS_O_WORKDIR}/${PBS_JOBNAME}.${PBS_JOBID}"
+mv "${outdir}" "${OUTOUT_DIRECTORY}"
