@@ -9,7 +9,7 @@ BRANCH="main"
 # arguments passed to src/cli.py
 SCRIPT_ARGS="fine-tune --thinking --dataset data/1/train_data.json --output-repo Jajasek/llama-3.1-syllogism-grpo-lora"
 # Optional: path to the file containing the huggingface token, relative to the directory from which the job is submitted
-HF_TOKEN_PATH=".hf_token"
+HF_TOKEN_RELATIVE_PATH=".hf_token"
 OUTPUT_DIRECTORY="${PBS_O_WORKDIR}/${PBS_JOBNAME}.${PBS_JOBID}"
 
 # Print out the basic info about the job
@@ -38,10 +38,9 @@ curl -LsSf https://astral.sh/uv/install.sh | env UV_PRINT_QUIET=1 UV_UNMANAGED_I
 mkdir -p "${outdir}"
 
 # Authenticate with HuggingFace
-hf_token_file="${PBS_O_WORKDIR}/${HF_TOKEN_PATH}"
-if [[ -f "${hf_token_file}" ]]; then
-    HF_TOKEN=$(cat "${hf_token_file}")
-    export HF_TOKEN
+HF_TOKEN_PATH="${PBS_O_WORKDIR}/${HF_TOKEN_RELATIVE_PATH}"
+if [[ -f "${HF_TOKEN_PATH}" ]]; then
+    export HF_TOKEN_PATH
 fi
 
 # Run the main task
