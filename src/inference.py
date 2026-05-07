@@ -76,7 +76,7 @@ class PeftThinkingSyllogismSolver(SyllogismSolver):
         from peft import PeftModel
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
-        from .training.grpo_lora import bnb_config
+        from training.grpo_lora import bnb_config
 
         model = AutoModelForCausalLM.from_pretrained(
             model_name, quantization_config=bnb_config, device_map="auto"
