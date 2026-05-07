@@ -147,10 +147,47 @@ def run(model: str, adapter: str, thinking: bool, file: Reader[str]):
 )
 @click.argument("prediction", nargs=-1)
 def evaluate(ref: str, prediction: tuple[str, ...], out: Writer[str]):
-    from evaluation import run_full_scoring
+    from evaluation.evaluation_official import run_full_scoring
 
     for pred in prediction:
         run_full_scoring(ref, pred, out)
+
+
+@cli.command()
+@click.option(
+    "-m",
+    "--model",
+    type=str,
+    default="meta-llama/Llama-3.1-8B-Instruct",
+    help="Change the language model used.",
+)
+@click.option(
+    "-a",
+    "--adapter",
+    type=str,
+    default="MatusZelko/llama-3.1-syllogism-lora",
+    help="Change the adapter used.",
+)
+@click.option(
+    "--thinking/--no-thinking",
+    default=False,
+    help="Enable the model to think out loud.",
+)
+@click.option(
+    "-d",
+    "--dataset",
+    type=click.Path(exists=True),
+    help="Evaluation dataset",
+)
+def download_and_evaluate(model: str, adapter: str, thinking: bool, dataset: str):
+    if thinking:
+        from inference import PeftThinkingSyllogismSolver as Solver
+    else:
+        from inference import PeftSyllogismSolver as Solver
+    solver = Solver(model, adapter)
+
+    from evaluation.evaluation import download_and_evaluate
+    download_and_evaluate(solver, dataset)
 
 
 if __name__ == "__main__":

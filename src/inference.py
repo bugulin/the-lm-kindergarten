@@ -17,9 +17,10 @@ class SyllogismSolver(ABC):
     """A syllogism solver."""
 
     def __init__(
-        self, prompt_path: str = "solver.j2", config: str | None = None, *args, **kwargs
+        self, model, prompt_path: str = "solver.j2", config: str | None = None, *args, **kwargs
     ) -> None:
-        self.pipe = pipeline("text-generation", *args, **kwargs)
+        self.model = model
+        self.pipe = pipeline("text-generation", *args, model=model, **kwargs)
 
         env = Environment(loader=FileSystemLoader(Path(__file__) / "prompts"))
         self.prompt = env.get_template(prompt_path)
