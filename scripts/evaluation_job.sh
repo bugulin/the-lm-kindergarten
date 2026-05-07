@@ -7,7 +7,7 @@
 REPOSITORY="https://github.com/bugulin/SemEval-2026-11"
 BRANCH="main"
 # arguments passed to src/cli.py
-SCRIPT_ARGS="download-and-evaluate --thinking --dataset data/1/mess/new_synthetic_purified.json --adapter Jajasek/llama-3.1-syllogism-grpo-lora"
+SCRIPT_ARGS="download-and-evaluate --thinking --dataset datasets/mess/new_synthetic_purified.json --adapter Jajasek/llama-3.1-8B-syllogism-grpo-lora"
 # Optional: path to the file containing the huggingface token, relative to the directory from which the job is submitted
 HF_TOKEN_RELATIVE_PATH=".hf_token"
 
@@ -31,7 +31,6 @@ cd "${SCRATCHDIR}" || exit
 git clone --branch="${BRANCH}" --depth=1 "${REPOSITORY}" repo
 cd repo || exit
 curl -LsSf https://astral.sh/uv/install.sh | env UV_PRINT_QUIET=1 UV_UNMANAGED_INSTALL="bin" sh
-mkdir -p "${outdir}"
 
 # Authenticate with HuggingFace
 HF_TOKEN_PATH="${PBS_O_WORKDIR}/${HF_TOKEN_RELATIVE_PATH}"
