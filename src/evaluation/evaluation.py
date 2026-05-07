@@ -1,6 +1,6 @@
 from datasets import load_dataset
 
-from .inference import SyllogismSolver
+from inference import SyllogismSolver
 
 
 def download_and_evaluate(solver: SyllogismSolver, dataset_path: str):

@@ -5,7 +5,7 @@
 
 ## JOB SETTINGS
 REPOSITORY="https://github.com/bugulin/SemEval-2026-11"
-BRANCH="main"
+BRANCH="jachym-fine-tuning"
 # arguments passed to src/cli.py
 SCRIPT_ARGS="download-and-evaluate --thinking --dataset datasets/mess/new_synthetic_purified.json --adapter Jajasek/llama-3.1-8B-syllogism-grpo-lora"
 # Optional: path to the file containing the huggingface token, relative to the directory from which the job is submitted
@@ -39,4 +39,5 @@ if [[ -f "${HF_TOKEN_PATH}" ]]; then
 fi
 
 # Run the main task
+export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
 bin/uv run src/cli.py ${SCRIPT_ARGS}
