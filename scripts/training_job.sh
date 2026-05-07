@@ -47,4 +47,4 @@ fi
 bin/uv run src/cli.py ${SCRIPT_ARGS} -o "${outdir}"
 
 # Clean up
-mv "${outdir}" "${OUTOUT_DIRECTORY}"
+mv "${outdir}" "${OUTPUT_DIRECTORY}"
