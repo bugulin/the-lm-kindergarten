@@ -27,7 +27,9 @@ jobs:
       env:
         KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-      run: kaggle kernels pull janflajk/syllogisms -p .
+      run: | 
+        kaggle kernels pull janflajk/syllogisms -p .
+        mv syllogisms.ipynb  SemEval-2026-11/data/1/
 
     - name: Commit and push changes
       run: |
