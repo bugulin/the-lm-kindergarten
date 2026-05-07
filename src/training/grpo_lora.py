@@ -114,6 +114,8 @@ def fine_tune(
         reward_funcs=validity_reward,
         args=GRPOConfig(
             output_dir=output_dir,
+            push_to_hub=output_repo is not None,
+            hub_model_id=output_repo,
             max_completion_length=1024,
             per_device_train_batch_size=8,
             gradient_accumulation_steps=4,
@@ -127,4 +129,4 @@ def fine_tune(
     trainer.train()
 
     if output_repo is not None:
-        trainer.push_to_hub(output_repo)
+        trainer.push_to_hub()
