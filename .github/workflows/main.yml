@@ -29,7 +29,7 @@ jobs:
         KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       run: | 
         kaggle kernels pull janflajk/syllogisms -p .
-        mv syllogisms.ipynb  SemEval-2026-11/src/generator/
+        mv syllogisms.ipynb  /src/generator/
 
     - name: Commit and push changes
       run: |
