@@ -22,7 +22,7 @@ class SyllogismSolver(ABC):
         self.model = model
         self.pipe = pipeline("text-generation", *args, model=model, **kwargs)
 
-        env = Environment(loader=FileSystemLoader(Path(__file__) / "prompts"))
+        env = Environment(loader=FileSystemLoader(Path(__file__).parent / "prompts"))
         self.prompt = env.get_template(prompt_path)
 
     def solve(self, data: Iterable[InputItem]) -> Generator[OutputItem, None, None]:
